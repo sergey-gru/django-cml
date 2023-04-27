@@ -36,6 +36,6 @@ Run `python manage.py migrate` to create the cml models.
 
 Create a `cml-pipelines.py` file with `python manage.py cmlpipelines` and add it to settings file like this::
 
-    CML_PROJECT_PIPELINES = 'project.cml_pipelines'
+    CML_USER_DELEGATE = 'project.cml_pipelines'
 
 Modify pipeline objects for your needs to stack this with your models.
