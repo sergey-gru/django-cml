@@ -4,38 +4,58 @@ CML
 
 CML is a reusable Django app for data exchange in CommerceML 2 standard.
 
+This packet is avaliable here: https://pypi.org/project/django-cml2
+
+
 Requirements
 ------------
 
 - Python 3.3, 3.4, 3.5, 3.6
-- Django 2.x
+- Django 3.2
 
 Quick start
 -----------
 
-Install using pip::
+1. Install using pip::
 
-    pip install django-cml
+    pip install django-cml2
 
-Or clone the repo and add to your `PYTHONPATH`::
+   or clone the repo and add to your `PYTHONPATH`::
 
-    git clone https://github.com/ArtemiusUA/django-cml.git
+    git clone https://github.com/sergey-gru/django-cml.git
 
-Add "cml" to your `INSTALLED_APPS` setting like this::
+
+2. Add 'cml' to your `settings.py` like this::
 
     INSTALLED_APPS = [
         ...
         'cml',
     ]
 
-Include the cml URLconf in your project `urls.py` like this::
+3. Include the cml URLconf in your project `urls.py` like this::
 
-    re_path(r'^cml/', include('cml.urls')),
+    urlpatterns = [
+        ...
+        path('cml', include('cml.urls')),
+    ]
 
-Run `python manage.py migrate` to create the cml models.
+4. To create cml models run::
 
-Create a `cml-pipelines.py` file with `python manage.py cmlpipelines` and add it to settings file like this::
+    python manage.py migrate cml
 
-    CML_USER_DELEGATE = 'project.cml_pipelines'
 
-Modify pipeline objects for your needs to stack this with your models.
+5. Create a template of `cml_delegate.py`::
+
+    python manage.py cml_init
+
+6. Register it to `settings.py` file like this::
+
+    CML_USER_DELEGATE = 'cml_delegate'
+    # CML_USER_DELEGATE = 'app.cml_delegate'
+
+7. Modify methods to stack new cml packet with your django models.
+
+
+Release notes
+----------------
+- 1.0.0 This version was created based on https://github.com/ArtemiusUA/django-cml

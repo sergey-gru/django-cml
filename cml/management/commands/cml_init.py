@@ -1,22 +1,26 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
-from django.conf import settings
 
-DEFAULT_FILE_NAME = 'cml_pipelines.py'
+
+DEFAULT_FILE_NAME = 'cml_delegate.py'
 
 
 class Command(BaseCommand):
     help = 'Creates a template file with project cml pipelines'
-    args = ['file']
 
-    def handle(self, file_name=None, **options):
-        project_name = os.path.basename(os.getcwd())
-        dst = file_name is not None and file_name or DEFAULT_FILE_NAME
-        if os.path.exists(dst):
-            raise CommandError('Error: file "%s" already exists' % dst)
-        open(dst, 'w').write(render_to_string('cml/cml-pipelines.txt', {
-            'project': project_name,
-            'file': os.path.basename(dst).split('.')[0]
-        }))
-        self.stdout.write('"%s" written.' % os.path.join(dst))
+    def handle(self, file_name=DEFAULT_FILE_NAME, **options):
+        file_path = os.path.join(os.getcwd(), file_name)
+        if os.path.exists(file_path):
+            raise CommandError(f'Error: file "{file_path}" already exists')
+
+        f = open(file_path, 'w')
+        f.write(render_to_string('cml/cml_delegate.py'))
+
+        module_name = os.path.basename(file_name)
+        msg = f'File: "{file_path}" created.\n'\
+              f'To connect you delegate add the following variable to your settings.py:\n\n'\
+              f'CML_USER_DELEGATE = \'{module_name}\'\n\n'\
+              'Don\'t forget to change this value after moving file.'
+
+        self.stdout.write(msg)

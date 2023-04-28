@@ -7,22 +7,25 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-cml',
-    python_requires='>3.3.0',
-    version='0.4.0',
-    packages=['cml'],
-    install_requires=['Django>=2.0', 'django-appconf>=1.0.1', 'six>=1.12.0'],
-    include_package_data=True,
-    license='BSD License',
-    description='App for data exchange in CommerceML 2 standard..',
+    name='django-cml2',
+    version='1.0.0',
+    author='Sergey Grunenko',
+    author_email='grunenko.serg@gmail.com',
+    url='https://github.com/sergey-gru/django-cml',
+    description='Application for data exchange in CommerceML 2 standard. This is a new version with new architecture',
     long_description=README,
-    url='https://github.com/ArtemiusUA/django-cml',
-    author='Artem Merkulov',
-    author_email='artem.merkulov@gmail.com',
+    license='BSD License',
+
+    packages=['cml'],
+    include_package_data=True,
+
+    python_requires='>3.3.0',
+    install_requires=['Django>=3.2', 'django-appconf>=1.0.1'],
+
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.0',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
