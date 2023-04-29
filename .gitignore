@@ -1,7 +1,8 @@
 *.pyc
 *.sqlite3
 .idea
+.DS_Store
 tmp
-dist
-django_cml.egg-info
 build
+dist
+django_cml2.egg-info

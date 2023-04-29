@@ -9,11 +9,12 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='django-cml2',
     version='1.0.0',
-    author='Sergey Grunenko',
-    author_email='grunenko.serg@gmail.com',
-    url='https://github.com/sergey-gru/django-cml',
     description='Application for data exchange in CommerceML 2 standard. This is a new version with new architecture',
     long_description=README,
+    author='Sergey Grunenko',
+    author_email='grunenko.serg@gmail.com',
+
+    url='https://github.com/sergey-gru/django-cml2',
     license='BSD License',
 
     packages=['cml'],

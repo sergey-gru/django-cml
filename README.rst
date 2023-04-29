@@ -22,7 +22,7 @@ Quick start
 
    or clone the repo and add to your `PYTHONPATH`::
 
-    git clone https://github.com/sergey-gru/django-cml.git
+    git clone https://github.com/sergey-gru/django-cml2.git
 
 
 2. Add 'cml' to your `settings.py` like this::
