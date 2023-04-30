@@ -7,7 +7,6 @@ import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Q
 from django.http import (HttpRequest, HttpResponse)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +20,10 @@ logger = logging.getLogger(__name__)
 
 # Test configuration of delegate. If delegate was not configured,
 utils.AbstractUserDelegate.get_child_class()
+
+RESPONSE_SUCCESS = 'success'
+RESPONSE_PROGRESS = 'progress'
+RESPONSE_ERROR = 'failure'
 
 
 @csrf_exempt
@@ -36,17 +39,17 @@ class ResponseException(Exception):
 
 
 def response_success(msg='') -> HttpResponse:
-    res = "{}\n{}".format(settings.CML_RESPONSE_SUCCESS, msg)
+    res = "{}\n{}".format(RESPONSE_SUCCESS, msg)
     return HttpResponse(res)
 
 
 def response_progress(msg='') -> HttpResponse:
-    res = "{}\n{}".format(settings.CML_RESPONSE_PROGRESS, msg)
+    res = "{}\n{}".format(RESPONSE_PROGRESS, msg)
     return HttpResponse(res)
 
 
 def response_error(msg='') -> HttpResponse:
-    res = "{}\n{}".format(settings.CML_RESPONSE_ERROR, msg)
+    res = "{}\n{}".format(RESPONSE_ERROR, msg)
     return HttpResponse(res)
 
 
