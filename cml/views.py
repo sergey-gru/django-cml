@@ -95,7 +95,7 @@ class ProtocolSession(object):
     def close(self):
         self._rec.state = ExchangeState.DONE
 
-    def set_operation(self, operation, filename):
+    def set_operation(self, operation, filename=None):
         self._rec.operation = operation
         self._rec.file_name = filename
         self._rec.save()
@@ -109,7 +109,7 @@ class ProtocolSession(object):
                 aa = Exchange.objects.filter(state=ExchangeState.INIT)  # type: ignore[attr-defined]
                 aa.filter(user=self.user).update(
                     state=ExchangeState.ABORT,
-                    report='Aborted by the same user'
+                    report='Replaced initialisation'
                 )
                 aa.exclude(user=self.user).update(
                     state=ExchangeState.ABORT,
@@ -175,7 +175,7 @@ class ProtocolSession(object):
                 try:
                     rec.report = ud.get_report()
                 except Exception as e:
-                    msg = f'Exception get_report: {e}'
+                    msg = f'User delegate get_report: {e}'
                     rec.report = msg
                     logger.error(msg, exc_info=True)
                     # result of operation will be OK.
@@ -252,7 +252,7 @@ class ProtocolView(View):
     # Check GET parameter filename and fix it, return (response, filename)
     @staticmethod
     def _get_param_filename(request: HttpRequestAuth) -> str:
-        filename = request.GET['filename']
+        filename = request.GET.get('filename')
         if not filename:  # None or ''
             msg = f'GET parameter <filename>="{filename}" is empty.'
             logger.info(msg)
@@ -298,8 +298,9 @@ class ProtocolView(View):
         return response_success(res)
 
     def api_init(self, request: HttpRequestAuth):
-        with self.session(request, is_init=True):
-            logger.info(f'catalog_init(user={request.user}): OK')
+        with self.session(request, is_init=True) as cur:
+            cur.set_operation(self.operation)
+            logger.info(f'OK: user={request.user}')
 
             result = 'zip={}\nfile_limit={}'.format(
                 'yes' if settings.CML_USE_ZIP else 'no',

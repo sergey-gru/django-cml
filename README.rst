@@ -76,14 +76,9 @@ Quick start
             ...
 
             # Logging important change process
-            'cml.views': {
+            'cml': {
                 'handlers': ['console', 'log_debug', 'log_info'] if DEBUG else ['log_info'],
                 'level': 'DEBUG',
-                'propagate': False,
-            },
-            'cml.utils': {
-                'handlers': ['console', 'log_debug', 'log_info'] if DEBUG else ['log_info'],
-                'level': 'INFO',
                 'propagate': False,
             },
         }

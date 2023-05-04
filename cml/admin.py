@@ -53,10 +53,10 @@ class ExchangeAdmin(admin.ModelAdmin):
 
     @staticmethod
     def uploaded(rec):
-        fmt = 'xml={}\nimg={}\nall={}'
+        fmt = 'xml={}\nimg={}\noth={}'
         return fmt.format(rec.c_up_xml,
                           rec.c_up_img,
-                          rec.c_up)
+                          rec.c_up - rec.c_up_xml - rec.c_up_img)
 
     @staticmethod
     def imported(rec):
@@ -72,7 +72,10 @@ class ExchangeAdmin(admin.ModelAdmin):
         return fmt.format(rec.c_exp_doc)
 
     @staticmethod
-    def _get_str_cut(val: str, max_len: int, cut_left=True) -> str:
+    def _get_str_cut(val: str or None, max_len: int, cut_left=True) -> str or None:
+        if val is None:
+            return None
+
         if len(val) <= max_len:
             return val
         if cut_left:
