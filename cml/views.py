@@ -84,17 +84,21 @@ class HttpRequestAuth(HttpRequest):
 
 
 class ProtocolSession(object):
-    def __init__(self, pv: 'ProtocolView', user=None, create=True):
+    def __init__(self, pv: 'ProtocolView', user=None, create=True, operation='init', filename=''):
+        self._pv = pv
         self.user = user
         self.create = create
-        self._pv = pv
+        self.operation = operation
+        self.filename = filename
         self._rec = None
 
     def close(self):
         self._rec.state = ExchangeState.DONE
 
-    def set_filename(self, filename):
+    def set_operation(self, operation, filename):
+        self._rec.operation = operation
         self._rec.file_name = filename
+        self._rec.save()
 
     def __enter__(self):
         """
@@ -209,6 +213,7 @@ class ProtocolView(View):
 
         self.user_delegate = utils.AbstractUserDelegate.get_child_instance()
         self._check_cml_upload_root(items.FileRef.base_path)
+        self.operation = None
 
         self.c_up = 0
         self.c_up_xml = 0
@@ -266,6 +271,8 @@ class ProtocolView(View):
 
         p_type = request.GET.get('type')
         p_mode = request.GET.get('mode')
+        self.operation = f'{p_type}_{p_mode}'
+
         api_method = self.routes_map.get((p_type, p_mode))
         if not api_method:
             msg = f'Unknown GET sequence: {get_kwargs}'
@@ -309,6 +316,8 @@ class ProtocolView(View):
 
         with self.session(request) as cur:
             filename = self._get_param_filename(request)
+            cur.set_operation(self.operation, filename)
+
             fref = items.FileRef(filename)
             folder_path = fref.full_path.parent
 
@@ -324,7 +333,6 @@ class ProtocolView(View):
                 logger.error(f'Cannot write to file. msg: {e}')
                 return response_error('Cannot write to buffer file')
 
-            cur.set_filename(filename)
             logger.info(f'File loaded: {fref.path}')
 
             self.c_up += 1
@@ -343,14 +351,14 @@ class ProtocolView(View):
     def api_import(self, request: HttpRequestAuth):
         with self.session(request) as cur:
             filename = self._get_param_filename(request)
-            fref = items.FileRef(filename)
+            cur.set_operation(self.operation, filename)
 
+            fref = items.FileRef(filename)
             if not fref.full_path.exists():
                 msg = f'File not found: {fref.path}'
                 logger.info(msg)
                 return response_error(msg)
 
-            cur.set_filename(filename)
             pack = items.Packet.parse(fref.full_path)
             self.import_pack(pack)
 
@@ -366,11 +374,12 @@ class ProtocolView(View):
 
     def api_query(self, request: HttpRequestAuth):
         with self.session(request, is_init=True) as cur:
+            cur.set_operation(self.operation, 'query')
+
             pack = items.Packet()
             pack.docs = self.user_delegate.export_orders()
 
             data = pack.compose()
-            cur.set_filename('query')
             self.c_exp_doc += 1
 
             logger.info(f'sale_success(user={request.user}): OK')

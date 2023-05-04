@@ -28,7 +28,8 @@ class Exchange(models.Model):
     dt_start = models.DateTimeField(auto_now_add=True)
     dt_action = models.DateTimeField(auto_now=True, blank=True)
 
-    file_name = models.CharField(max_length=250, default='')
+    operation = models.CharField(max_length=30, default='', null=True)
+    file_name = models.CharField(max_length=250, default='', null=True)
 
     c_up = models.IntegerField(default=0)
     c_up_xml = models.IntegerField(default=0)

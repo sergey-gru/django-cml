@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-cml2',
-    version='1.0.0.3',
+    version='1.0.0.4',
     description='Application for data exchange in CommerceML 2 standard. This is a new version with new architecture',
     long_description=README,
     author='Sergey Grunenko',

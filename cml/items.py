@@ -175,7 +175,6 @@ class Group(ItemBase):
 
 
 class ValueType(Enum):
-    UNDEFINED = 0
     STRING = 'Строка'  # Boolean values represents as strings "Yes" "No"
     NUMBER = 'Число'   # float number
     DATETIME = 'Время'

@@ -13,6 +13,7 @@ class ExchangeAdmin(admin.ModelAdmin):
         'uploaded',
         'imported',
         'exported',
+        'operation',
         'file_name_short',
         'state',
         'report_short',
