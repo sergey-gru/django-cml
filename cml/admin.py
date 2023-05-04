@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import datetime
 from datetime import timedelta
 from django.contrib import admin
 from .models import *
@@ -44,26 +43,30 @@ class ExchangeAdmin(admin.ModelAdmin):
         return rec.dt_action.isoformat(timespec='seconds')
     dt_action_iso.short_description = 'date action'
 
-    def duration(self, rec):
+    @staticmethod
+    def duration(rec):
         diff = rec.dt_action - rec.dt_start
         sec = round(diff.total_seconds())
         diff = timedelta(seconds=sec)
         return str(diff)
 
-    def uploaded(self, rec):
+    @staticmethod
+    def uploaded(rec):
         fmt = 'xml={}\nimg={}\nall={}'
         return fmt.format(rec.c_up_xml,
                           rec.c_up_img,
                           rec.c_up)
 
-    def imported(self, rec):
+    @staticmethod
+    def imported(rec):
         fmt = 'cl={}\ncat={}\noff={}\ndocs={}'
         return fmt.format(rec.c_imp_classifier,
                           rec.c_imp_catalogue,
                           rec.c_imp_offers_pack,
                           rec.c_imp_doc)
 
-    def exported(self, rec):
+    @staticmethod
+    def exported(rec):
         fmt = 'docs={}'
         return fmt.format(rec.c_exp_doc)
 

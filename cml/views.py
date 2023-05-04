@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import logging
 import typing
 import os
 import shutil
@@ -11,11 +10,9 @@ from django.http import (HttpRequest, HttpResponse)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from . import logger
 from . import (auth, utils, items)
 from .models import Exchange, ExchangeState
-
-
-logger = logging.getLogger(__name__)
 
 
 # Test configuration of delegate. If delegate was not configured,

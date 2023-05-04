@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -
 from __future__ import absolute_import
-import logging
 import importlib
 import inspect
+from . import logger
 from . import items, xml
 from .conf import settings
-
-
-logger = logging.getLogger(__name__)
 
 
 class AbstractUserDelegate(object):

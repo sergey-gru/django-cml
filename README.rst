@@ -4,7 +4,7 @@ CML
 
 CML is a reusable Django app for data exchange in CommerceML 2 standard.
 
-This packet is avaliable here: https://pypi.org/project/django-cml2
+This packet is available here: https://pypi.org/project/django-cml2
 
 
 Requirements
@@ -20,9 +20,13 @@ Quick start
 
     pip install django-cml2
 
-   or clone the repo and add to your `PYTHONPATH`::
+   or clone the repo and add to your virtual environment `venv`::
+
+    # cd <your_project>
+    # source venv/bin/activate
 
     git clone https://github.com/sergey-gru/django-cml2.git
+    pip install --editable django-cml2
 
 
 2. Add 'cml' to your `settings.py` like this::
@@ -56,6 +60,35 @@ Quick start
 7. Modify methods to stack new cml packet with your django models.
 
 
+8. Add logger settings to your `settings.py`::
+
+    LOGGING = {
+        'version': 1,
+        ...
+
+        'handlers': {
+            'console': {...},
+            'log_debug': {...},
+            'log_info': {...},
+        },
+
+        'loggers': {
+            ...
+
+            # Logging important change process
+            'cml.views': {
+                'handlers': ['console', 'log_debug', 'log_info'] if DEBUG else ['log_info'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+            'cml.utils': {
+                'handlers': ['console', 'log_debug', 'log_info'] if DEBUG else ['log_info'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        }
+    }
+
 Release notes
 ----------------
-- 1.0.0 This version was created based on https://github.com/ArtemiusUA/django-cml
+- 1.0.0 This version was forked from https://github.com/ArtemiusUA/django-cml

@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -
-import logging
 import typing
 from io import BytesIO
 from lxml import etree
-
-
-logger = logging.getLogger(__name__)
 
 
 class XmlImportException(Exception):

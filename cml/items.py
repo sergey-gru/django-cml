@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -
 from __future__ import absolute_import
-import logging
 import os
 from decimal import Decimal
 from datetime import datetime
 from enum import Enum, IntEnum
 from pathlib import Path
-from .xml import XmlElement
+from . import logger
 from .conf import settings
-
-
-logger = logging.getLogger(__name__)
+from .xml import XmlElement
 
 
 def time_from_string(s: str) -> datetime.time:
@@ -212,7 +209,8 @@ class Property(ItemBase):
         it.is_multi = el.find('Множественное', converter=as_bool, default=False)
         it.is_required = el.find('Обязательное', converter=as_bool, default=False)
         it.for_products = el.find('ДляТоваров', converter=as_bool)
-        it.variants = el.findall('ВариантыЗначений/Значение', converter=str)
+
+        it.variants = el.findall('ВариантыЗначений/*/Значение', converter=str)
         if it.value_type == ValueType.LIST:
             it.variants_list = el.findall('ВариантыЗначений/Справочник',
                                           converter_xml=PropertyVariant.parse_xml)
@@ -347,7 +345,7 @@ class Product(ItemBase):
         super(Product, self).__init__(*args, **kwargs)  # type: ignore
         self.status = ProductStatus.NEW
         self.uid = ''
-        self.vendor_uid = ''
+        self.vendor_code = ''
         self.code = ''
         self.name = ''
         self.unit = Unit()
@@ -385,11 +383,13 @@ class Product(ItemBase):
         it.unit = el.find('БазоваяЕдиница', converter_xml=Unit.parse_xml_ref)
         it.group_uids = el.findall('Группы/Ид', converter=str)
         it.category_uid = el.find('Категория', converter=str)
+        it.desc = el.find('Описание', converter=str, default='')
 
         pvals = el.findall('ЗначенияСвойств/ЗначенияСвойства', converter_xml=PropertyValue.parse_xml)
         it.prop_values = [pval for pval in pvals if not pval.is_empty()]
 
         it.requisites = cls._imp_requisites(el)
+        # files, images
         for fr in el.findall('Картинка', converter=FileRef):
             if fr.is_image_type():
                 it.images.append(fr)
