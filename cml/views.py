@@ -6,7 +6,7 @@ import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.db import transaction
-from django.http import (HttpRequest, HttpResponse)
+from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -30,9 +30,8 @@ def front_view(request):
     return ProtocolView().dispatch(request)
 
 
-class ResponseException(Exception):
-    def __init__(self, response: HttpResponse):
-        self.res = response
+class ClientException(Exception):
+    pass
 
 
 def response_success(msg='') -> HttpResponse:
@@ -128,7 +127,7 @@ class ProtocolSession(object):
                 except Exception:
                     msg = 'Session has not been started. Try to make init request.'
                     logger.info(msg)
-                    raise ResponseException(response_error(msg))
+                    raise ClientException(msg)
 
         self._rec = rec
         pv = self._pv
@@ -256,7 +255,7 @@ class ProtocolView(View):
         if not filename:  # None or ''
             msg = f'GET parameter <filename>="{filename}" is empty.'
             logger.info(msg)
-            raise ResponseException(response_error(msg))
+            raise ClientException(msg)
         return filename
 
     def session(self, request: HttpRequestAuth, is_init=False):
@@ -281,6 +280,8 @@ class ProtocolView(View):
 
         try:
             res = api_method(request)
+        except ClientException as e:
+            return response_error(str(e))
         except Exception as e:
             logger.error(f'Internal server error: method={api_method.__name__} msg="{e}" '
                          f'GET: {get_kwargs}  user="{request.user}"',
